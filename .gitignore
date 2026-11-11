@@ -1,11 +1,5 @@
-# Downloaded tools and extracted third-party files
+# Extracted working copies; original tool archives are tracked
 /inspection/
-*.7z
-*.zip
-*.rar
-*.exe
-*.dll
-*.apk
 
 # Device firmware, backups, and unlock tokens
 *.img

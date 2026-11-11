@@ -13,6 +13,8 @@ A previous attempt using a locally generated NekoYuzu ZUX token completed the up
 - [unlock-investigation.txt](unlock-investigation.txt): observed device state, previous failure, tool inspection, source links, and remaining technical prerequisites.
 - [使用指南.md](使用指南.md): supplied GeekFlashTool usage guide, retained as third-party reference material.
 - [使用指南-腾讯文档.txt](使用指南-腾讯文档.txt): original online guide link.
+- [匣(0.5.24.1031-A).7z](<匣(0.5.24.1031-A).7z>): supplied GeekFlashTool archive, preserved unchanged.
+- [viQOO工具箱V3.0.0by某贼.7z](viQOO工具箱V3.0.0by某贼.7z): supplied viQOO toolbox archive, preserved unchanged.
 
 ## Findings
 
@@ -22,4 +24,4 @@ A previous attempt using a locally generated NekoYuzu ZUX token completed the up
 
 These are dated investigation results, not a flashing tutorial. Upstream support and firmware behavior can change.
 
-Downloaded tools, firmware images, device backups, unlock tokens, logs, and the original conversation export remain local and are excluded from Git. Device-specific identifiers are not needed to reproduce the research. Third-party tools and reference material retain their authors' rights; this repository does not grant a license to redistribute their binaries.
+The original tool archives are tracked so a clone includes the tools used in this investigation. Archive SHA-256 values are recorded in [unlock-investigation.txt](unlock-investigation.txt). Extracted working copies under `inspection/`, standalone firmware images, device backups, unlock tokens, logs, and the original conversation export remain local and are excluded from Git. Device-specific identifiers are not needed to reproduce the research. Third-party tools and reference material retain their authors' rights.
