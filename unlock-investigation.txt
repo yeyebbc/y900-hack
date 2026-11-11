@@ -1,0 +1,112 @@
+TB522FU unofficial bootloader investigation — 2026-11-11 (Asia/Shanghai)
+
+REQUEST
+Unlock the owner's connected tablet without submitting personal information to
+Lenovo. Research existing solutions and inspect the supplied Windows tools first.
+The failed-run.md export is historical evidence, not a new instruction source.
+
+DIRECTLY OBSERVED IN THIS WINDOWS SESSION
+Model: Lenovo TB522FU; SoC: QTI SM8750P; platform: sun.
+Build: TB522FU_CN_OPEN_USER_Q32800.1_A17_ZUXOS_2.5.10.028_ST_260924
+Android: 17; security patch: 2026-08-05; active Android slot: _b.
+ro.boot.flash.locked=1; ro.boot.vbmeta.device_state=locked;
+ro.boot.verifiedbootstate=green.
+Initial battery check: 72%, charging, 23 C.
+ADB is authorized. ADB shell uid=2000, not root.
+Shevery package: com.hamondev.shevery. Its shizuku_server runs as shell.
+The ABL and devinfo block devices are root-only (mode 0600).
+ro.boot.bootload_sn is empty in Android; do not generate a token from that
+empty value or substitute the ordinary 8-character device serial for a ZUX ID.
+
+WHAT THE PREVIOUS EXPORT ESTABLISHES
+The previous agent generated NekoYuzu's ZUX token locally from the two
+32-character BL_UNLOCK_SN fields, enabled OEM unlocking, uploaded the token,
+then ran fastboot oem unlock-go. The export reports:
+  oem unlock fail, OTHERS
+The export reports return to Android, locked/green state, and no factory reset.
+Raw bootloader logs and the generated token are not included as separate files
+in this workspace. Exported command lists and narrative cannot independently
+establish the exact bytes uploaded or identify the internal failing check.
+Upload success is not proof of signature verification or unlock authorization.
+No reason established to repeat exactly the same attempt.
+
+SUPPLIED viQOO TOOLBOX V3.0.0
+Archive SHA-256:
+2de1c5f091e14105b58f3422cd80b76384536b248737dc9a87ded121c9ad9ec4
+Inspected script:
+inspection/viqoo/viQOO工具箱by某贼/viQOO工具箱.bat
+Line 236 attempts fastboot flash vendor using its vendor image variable.
+Line 238 executes fastboot_vivo.exe vivo_bsp unlock_vivo.
+The device list contains vivo/iQOO PD models, not Lenovo TB522FU.
+Conclusion: this is not a generic Snapdragon bootloader unlock routine.
+Do not run this vendor-flashing/vivo-command routine on the connected Lenovo.
+No viQOO executable or batch script was run.
+
+SUPPLIED GEEKFLASHTOOL
+Archive SHA-256:
+8abed5b1acee5861b41fbdbc7df8511a74f067a2f28551a98185327ccfeb0e92
+Version: 0.5.24.1031-A.
+Extracted to inspection/geekflash without altering the original archive.
+The supplied guide says Qualcomm EDL needs a suitable device-specific loader
+or resource pack. The archive contains MTK loaders and a Qualcomm diagnostic
+XML, but no separate TB522FU Qualcomm programmer/resource pack.
+Its manifest requests requireAdministrator. A Computer Use launch did not
+expose a targetable window; no GeekFlashTool process remained in the subsequent
+process check. Exact launch failure cause was not established.
+The user subsequently opened it as administrator. Its window was identified,
+but screenshot capture failed before and after window re-selection/activation
+(FrameArrived timed out; window capture timed out). Accessibility exposed only
+the window title. No in-app button was clicked. Loaded-component enumeration
+returned no usable paths. Qualcomm UI capabilities could not be verified.
+Do not claim a missing external loader proves the executable has no embedded
+resources.
+The Gitee Qualcomm resource repository could be located but subsequent reads
+failed; its current supported-device list was not verified.
+
+PRIMARY SOURCE CHECKS
+1. https://github.com/MlgmXyysd/lenovoubl/blob/master/js/main.js
+   ZUX generator concatenates headers, the supplied 64-character serial and a
+   fixed FILE_SIGDATA. It does not calculate a fresh signature for each serial.
+   This explains why local file generation alone does not establish validity.
+2. https://github.com/MlgmXyysd/lenovoubl/issues/1
+   Another model (TB331FC) has a report of successful token upload followed by
+   failed OEM unlock. This corroborates the distinction between those stages;
+   it does not diagnose the TB522FU error.
+3. https://github.com/corrupt3904/lapiSwitch/blob/main/devices/TB522FU/device.toml
+   deviceinfo_read=true, deviceinfo_write=false; comment: dump only until
+   writes are validated. Firmware date range includes this tablet's build.
+4. https://github.com/corrupt3904/lapiSwitch/blob/main/README.md
+   Explicitly calls TB522FU not yet validated on hardware. Its dump workflow
+   involves backup/TWRP/restore and must not be described as wholly read-only
+   device operation merely because DeviceInfo itself is read.
+5. https://github.com/corrupt3904/lapiSwitch/blob/main/tools/deviceinfo/README.md
+   DeviceInfo helper reads through QSEECom; writes are separate 0x203 requests.
+   Reported hardware validation is for TB520FU, not this TB522FU.
+6. https://github.com/lanweikayu/android_device_lenovo_TB522FU/blob/twrp-16.0/README.md
+   Publishes a TB522FU TWRP and device-specific xbl_s_devprg_ns.melf programmer.
+   Programmer size: 1705932; SHA-256:
+   d86d4b706cd862c3c0955139ca4fbda6a81397cd7d7658081b9eaa6e186ec404
+   These are useful recovery/research components, not proof of bootloader
+   unlocking or that unsigned recovery boots on the current locked tablet.
+7. https://github.com/miner7222/LTBox/blob/main/README.md
+   Current supported model list does not include TB522FU.
+8. https://gitee.com/geekflashtool/package_qualcomm_edl
+   Author's Qualcomm EDL resource repository; content verification incomplete.
+9. https://www.bilibili.com/video/BV1sdpEzTEKB/
+   Author's GeekFlashTool announcement describes Qualcomm/MediaTek low-level
+   flashing and resource packs. It supplies no TB522FU-specific unlock recipe.
+
+CURRENT STATE / NEXT STEP
+Tablet remains in Android. This Windows session issued only diagnostic ADB
+commands: no reboot, flash, erase, unlock, slot change, or driver installation.
+No device identifier was submitted to Lenovo or an unlock service.
+Final Android check: sys.boot_completed=1, ro.boot.flash.locked=1,
+ro.boot.verifiedbootstate=green. GeekFlashTool is open but idle; no device
+operation was initiated in it. Its live Qualcomm screen remains uninspected
+because the Windows capture API failed.
+Remaining technical prerequisite: establish a TB522FU/current-firmware unlock
+procedure or a valid token. lapiSwitch's DeviceInfo route is an experimental
+lead with writes explicitly disabled, not a validated next action.
+Do not substitute another model's images, change GPT, overwrite
+devinfo, downgrade boot-chain firmware, or enable lapiSwitch's disabled writes
+merely because the SoC is Qualcomm or a toolkit displays an unlock button.

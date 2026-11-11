@@ -1,0 +1,37 @@
+# Downloaded tools and extracted third-party files
+/inspection/
+*.7z
+*.zip
+*.rar
+*.exe
+*.dll
+*.apk
+
+# Device firmware, backups, and unlock tokens
+*.img
+*.bin
+*.elf
+*.melf
+*.qcn
+*.pem
+*.key
+/backups/
+/work/
+/outputs/
+/logs/
+*.log
+bootloader_sn*
+sn_*
+
+# Original conversation export contains device identifiers and local paths
+/failed-run.md
+
+# Local credentials and caches
+.env
+.env.*
+!.env.example
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
